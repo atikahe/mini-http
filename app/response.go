@@ -43,7 +43,7 @@ func BuildResponse(req *Request) (*Response, error) {
 		}, nil
 	}
 
-	content := req.Path[5:]
+	content := req.Path[6:]
 
 	headers := map[string]string{
 		ContentType:   TextPlain,
