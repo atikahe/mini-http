@@ -17,12 +17,6 @@ func handleConnection(conn net.Conn) {
 		os.Exit(1)
 	}
 
-	// statusCode := StatusNotFound
-	// if request.Path == "/" {
-	// 	statusCode = StatusOK
-	// }
-
-	// response := fmt.Sprintf("HTTP/1.1 %d %s OK\r\n\r\n", statusCode, statusCode)
 	response, err := BuildResponse(request)
 	if err != nil {
 		fmt.Println(err)
