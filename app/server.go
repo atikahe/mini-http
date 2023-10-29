@@ -27,5 +27,14 @@ func main() {
 
 	fmt.Println("Request accepted")
 
-	conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
+	buffer := make([]byte, 4096)
+	n, err := conn.Read(buffer)
+
+	fmt.Println("err", err)
+	fmt.Println("n", n)
+
+	_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
+	if err != nil {
+		fmt.Println("Error sending response", err.Error())
+	}
 }
