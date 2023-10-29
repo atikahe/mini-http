@@ -35,14 +35,15 @@ func BuildResponse(req *Request) (*Response, error) {
 		return nil, fmt.Errorf("error parsing path: invalid length")
 	}
 
-	path, content := pathArr[1], pathArr[1:]
-
+	path := pathArr[1]
 	if path != "echo" {
 		return &Response{
 			Version: req.Version,
 			Status:  StatusNotFound,
 		}, nil
 	}
+
+	content := req.Path[5:]
 
 	headers := map[string]string{
 		ContentType:   TextPlain,
