@@ -4,7 +4,7 @@ type StatusCode int
 
 const (
 	StatusOK       StatusCode = 200
-	StatusNotFound StatusCode = 400
+	StatusNotFound StatusCode = 404
 )
 
 var mapStatusString = map[StatusCode]string{
