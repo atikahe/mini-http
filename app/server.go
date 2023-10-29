@@ -28,13 +28,15 @@ func main() {
 	fmt.Println("Request accepted")
 
 	buffer := make([]byte, 4096)
-	n, err := conn.Read(buffer)
-
-	fmt.Println("err", err)
-	fmt.Println("n", n)
+	_, err = conn.Read(buffer)
+	if err != nil {
+		fmt.Println("Error reading request content", err.Error())
+		os.Exit(1)
+	}
 
 	_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 	if err != nil {
 		fmt.Println("Error sending response", err.Error())
+		os.Exit(1)
 	}
 }
