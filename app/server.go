@@ -17,14 +17,19 @@ func handleConnection(conn net.Conn) {
 		os.Exit(1)
 	}
 
-	statusCode := StatusNotFound
-	if request.Path == "/" {
-		statusCode = StatusOK
+	// statusCode := StatusNotFound
+	// if request.Path == "/" {
+	// 	statusCode = StatusOK
+	// }
+
+	// response := fmt.Sprintf("HTTP/1.1 %d %s OK\r\n\r\n", statusCode, statusCode)
+	response, err := BuildResponse(request)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	response := fmt.Sprintf("HTTP/1.1 %d %s OK\r\n\r\n", statusCode, statusCode)
-
-	_, err = conn.Write([]byte(response))
+	_, err = conn.Write([]byte(EncodeResponse(response)))
 	if err != nil {
 		fmt.Println("Error sending response", err.Error())
 		os.Exit(1)

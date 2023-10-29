@@ -1,21 +1,62 @@
 package main
 
-type StatusCode int
-
-const (
-	StatusOK       StatusCode = 200
-	StatusNotFound StatusCode = 404
+import (
+	"fmt"
+	"strings"
 )
 
-var mapStatusString = map[StatusCode]string{
-	StatusOK:       "OK",
-	StatusNotFound: "Not Found",
+// type ResponseHeader struct {
+// 	ContentType string
+// }
+
+const (
+	ContentType   string = "Content-Type"
+	ContentLength string = "Content-Length"
+	TextPlain     string = "text/plain"
+)
+
+type Response struct {
+	Version string
+	Status  StatusCode
+	Headers map[string]string
+	Body    interface{}
 }
 
-func (s StatusCode) String() string {
-	if _, ok := mapStatusString[s]; !ok {
-		return ""
+func BuildResponse(req *Request) (*Response, error) {
+	pathArr := strings.Split(req.Path, "/")
+	if len(pathArr) < 2 {
+		return nil, fmt.Errorf("error parsing path: invalid length")
 	}
 
-	return mapStatusString[s]
+	path, content := pathArr[0], pathArr[1]
+	if path != "echo" {
+		return &Response{
+			Status: StatusNotFound,
+		}, nil
+	}
+
+	headers := map[string]string{
+		ContentType:   TextPlain,
+		ContentLength: fmt.Sprintf("%d", len(content)),
+	}
+
+	return &Response{
+		Version: req.Version,
+		Status:  StatusOK,
+		Headers: headers,
+		Body:    content,
+	}, nil
+}
+
+func EncodeResponse(res *Response) string {
+	spec := fmt.Sprintf("HTTP/%s %d %s\r\n", res.Version, res.Status, res.Status)
+	headers := ""
+
+	for key, value := range res.Headers {
+		headers += fmt.Sprintf("%s: %s\r\n", key, value)
+	}
+
+	body := fmt.Sprintf("\r\n%v\r\n", res.Body)
+
+	return fmt.Sprintf("%s%s%s", spec, headers, body)
 }
