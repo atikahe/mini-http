@@ -23,6 +23,13 @@ type Response struct {
 }
 
 func BuildResponse(req *Request) (*Response, error) {
+	if req.Path == "/" {
+		return &Response{
+			Version: req.Version,
+			Status:  StatusOK,
+		}, nil
+	}
+
 	pathArr := strings.Split(req.Path, "/")
 	if len(pathArr) < 2 {
 		return nil, fmt.Errorf("error parsing path: invalid length")
@@ -31,7 +38,8 @@ func BuildResponse(req *Request) (*Response, error) {
 	path, content := pathArr[0], pathArr[1]
 	if path != "echo" {
 		return &Response{
-			Status: StatusNotFound,
+			Version: req.Version,
+			Status:  StatusNotFound,
 		}, nil
 	}
 
